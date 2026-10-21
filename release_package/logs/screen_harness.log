@@ -1,0 +1,18 @@
+Input: v3/C1_v21/cells/C1_010/native
+Requested output times only; period starts include first and zero-rain periods.
+S21: A > 5. S21-D1: A >= 72 AND a younger wet period has started.
+A = (D0 / cos(slope)^2) * (output_time - period_start) / L^2
+zone 1: cells=1; applicable=1; slopes=35..35 deg; max A=1.59999994; S21=UNEXPOSED; S21-D1=NO-D1
+Applicability: finite saturated kernel or unsaturated fallback d <= 1/alpha.
+PASS: agrees with frozen harness predictions for max A, S21 and S21-D1.
+Process exit status: 0
+
+Input: v3/C2_D1/cells/C1_D1_L080_R050_W100/native
+Requested output times only; period starts include first and zero-rain periods.
+S21: A > 5. S21-D1: A >= 72 AND a younger wet period has started.
+A = (D0 / cos(slope)^2) * (output_time - period_start) / L^2
+zone 1: cells=1; applicable=1; slopes=35..35 deg; max A=84.9999985; S21=EXPOSED; S21-D1=EXPOSED-D1
+Applicability: finite saturated kernel or unsaturated fallback d <= 1/alpha.
+PASS: agrees with frozen harness predictions for max A, S21 and S21-D1.
+Process exit status: 0
+

@@ -1,0 +1,16 @@
+Cleaned patch applied to a clean copy of code_scope/source_native.
+The exact diagnostic instrumentation was reversed before patch application.
+patch -p0 --batch --fuzz=0: return code 0, no offsets/rejects.
+Comparison: cleaned-patch Fortran sources against v3/B/source_release.
+iverson.f95: +1 / -1 lines; explanatory comments only
+ivestp.f95: +1 / -1 lines; explanatory comments only
+ivestp_p.f95: +1 / -1 lines; explanatory comments only
+pstpf.f95: +1 / -1 lines; explanatory comments only
+pstpf_p.f95: +1 / -1 lines; explanatory comments only
+pstpi.f95: +1 / -1 lines; explanatory comments only
+pstpi_p.f95: +1 / -1 lines; explanatory comments only
+PASS: 7 files have comment-only differences from the registered release; zero executable-statement differences across all 60 Fortran files.
+Correction patch changes 10 files relative to the clean native baseline.
+PASS: all 60 clean baseline Fortran files match pinned upstream v2.1.0, with line endings normalized.
+Pinned commit: 969c409f7bc63e7616ebe34dfd5f6afd967f2d2d
+Public patch SHA-256: 294f5d7df26c983c0f40465f3c41c3769bd2f1cc5ee64c54d0d77d5aab945d80

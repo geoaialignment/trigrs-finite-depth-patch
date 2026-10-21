@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.DS_Store
+landslides-trigrs/
+build_serial/
+build_mpi/
+regression_run*/

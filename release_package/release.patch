@@ -1,0 +1,608 @@
+--- iverson.f95
++++ iverson.f95
+@@ -110,7 +110,7 @@
+         end if
+       end if
+       rf=rf+rik(i+(n-1)*imax)*(rfa-rfb)
+-      if(rfa==0.0 .and. rfb==0.0) exit ! skip unnecessary cycles, RLB, 2/19/2015
++! early exit removed: zero exponential tails do not imply zero response
+     end do temporal_loop
+       ptran(j)=z*rf
+       if(z==0) ptran(j)=rf ! formula for ptran at z=0 not normalized, 9 Jan 2013, RLB 
+--- ivestp.f95
++++ ivestp.f95
+@@ -109,14 +109,14 @@
+            endif
+         endif
+         rf(j)=rf(j)+rik(i+(nn-1)*imax)*(rfa-rfb)
+-        if(rfa==0.0 .and. rfb==0.0) exit ! skip unnecessary cycles, RLB, 2/19/2015
++! early exit removed: zero exponential tails do not imply zero response
+         end do temporal_loop_1
+     end if
+     bline(j)=z*beta
+-    if(abs(rf(j))>0.0) then ! added 17AUG2009 RLB 
++
+       ptran(j)=z*rf(j) ! correction, added "z*" 4/27/2012, RLB
+       if(z==0) ptran(j)=rf(j) ! formula for ptran at z=0 not normalized, 9 Jan 2013, RLB 
+-    end if
++
+     p(j)=pzero(j)+ptran(j)
+     ptest=p(j)-bline(j)
+     if(ptest > 0.0) then
+--- ivestp_p.f95
++++ ivestp_p.f95
+@@ -122,15 +122,15 @@
+                  endif
+               endif
+               rf(j)=rf(j)+rik(i+(nn-1)*imax)*(rfa-rfb)
+-              if(rfa==0.0 .and. rfb==0.0) exit ! skip unnecessary cycles, RLB, 2/19/2015
++! early exit removed: zero exponential tails do not imply zero response
+               !if (z==0) write(*,*) 'i, j, rfa, rfb, rf(j), tdif1, tdif2',  i, j, rfa, rfb, rf(j), tdif1, tdif2
+            end do temporal_loop_1
+         end if
+         bline(j)=z*beta
+-        if(abs(rf(j))>0.0) then ! added 17AUG2009 RLB 
++
+            ptran(j)=z*rf(j) ! correction, added "z*" 4/27/2012, RLB
+            if(z==0) ptran(j)=rf(j) ! formula for ptran at z=0 not normalized, 9 Jan 2013, RLB 
+-        end if
++
+         p(j)=pzero(j)+ptran(j)
+         ptest=p(j)-bline(j)
+         if(ptest > 0.0) then
+--- pstpf.f95
++++ pstpf.f95
+@@ -226,7 +226,7 @@
+         rfb=0.0
+       end if
+       rf(j)=rf(j)+dh*beta*(rfa-rfb)
+-      if(rfa==0.0 .and. rfb==0.0) exit ! skip unnecessary cycles, RLB, 2/19/2015
++! early exit removed: zero exponential tails do not imply zero response
+     end do temporal_loop 
+   end if
+   bline(j)=z*beta
+--- pstpf_p.f95
++++ pstpf_p.f95
+@@ -242,7 +242,7 @@
+               rfb=0.0
+            end if
+            rf(j)=rf(j)+dh*beta*(rfa-rfb)
+-           if(rfa==0.0 .and. rfb==0.0) exit ! skip unnecessary cycles, RLB, 2/19/2015
++! early exit removed: zero exponential tails do not imply zero response
+         end do temporal_loop
+      end if
+      bline(j)=z*beta
+--- pstpi.f95
++++ pstpi.f95
+@@ -133,7 +133,7 @@
+         rfb=0.0
+       end if
+       rf(j)=rf(j)+dh*beta*(rfa-rfb) ! slope & Hyd. grad. correction
+-      if(rfa==0.0 .and. rfb==0.0) exit ! skip unnecessary cycles, RLB, 2/19/2015
++! early exit removed: zero exponential tails do not imply zero response
+     end do temporal_loop 
+   end if
+   bline(j)=z*beta
+--- pstpi_p.f95
++++ pstpi_p.f95
+@@ -145,7 +145,7 @@
+               rfb=0.0
+            end if
+            rf(j)=rf(j)+dh*beta*(rfa-rfb) ! slope & Hyd. grad. correction
+-           if(rfa==0.0 .and. rfb==0.0) exit ! skip unnecessary cycles, RLB, 2/19/2015
++! early exit removed: zero exponential tails do not imply zero response
+         end do temporal_loop
+      end if
+      bline(j)=z*beta
+--- savage.f95
++++ savage.f95
+@@ -75,120 +75,13 @@
+     end if
+     pzero(j)=beta*(z-depth(i))
+     rf=0.0
+-    riksum=rik(i);  ! added 5 Jan 2016, RLB
+-    temp2=dlz*(3.*(dlz-z)*(dlz-z)-dlz*dlz)/(6.*dlz*dlz) !time-independent factor, Moved 5 Jan 2016, RLB  
++
+     temporal_loop: do m=1,nper
+-      tdif1=t-capt(m)
+-      tfac1=tdif1*dif1/(dlz*dlz) ! Moved to top level of temporal_loop from line 89, 4 Jan 2016, RLB
+-      if(tdif1 > 0.0) then
+-! corrected diffusivity term in next line (divide by b1*b1)       
+-        t1=sqrt(tdif1*dif(zo(i))/(b1*b1))
+-        if (t1<1.0e-29) t1=1.0e-29
+-        term1=0.0
+-        if(tfac1>late_t) then !Added later time solution to improve performance and eliminate nonconvergent cells, 2/23-24/2015, RLB 
+-          temp1=tdif1*dif1/dlz ! Corrected 7 Jan 2016
+-          if(m>1) riksum=riksum+rik(i+(m-1)*imax)-rik(i+(m-2)*imax) ! Added 8 Jan 2016, RLB
+-          rf=rf+rik(i+(m-1)*imax)*temp1+riksum*temp2 ! revised 8 Jan 2016
+-          series_a_lt: do n=1,mmax ! later time solution
+-            rn=float(n)
+-            ar1=rn*pi*(dlz-z)/(dlz)
+-            ar2=(rn*pi)/dlz
+-            flt1=exp(-dif1*tdif1*ar2*ar2)*cos(ar1)
+-            flt1=float(-1**n)/(rn*rn)*flt1
+-! test for convergence of series to within 1/1e+06 of previous value      
+-            t1old=term1
+-            tol=abs(term1/1e+06) ! tol=term1/10000. revised 2/17/2015, RLB
+-            term1=term1+flt1
+-            delt1=abs(term1-t1old)
+-            n1=n
+-            if(delt1<=tol) exit
+-          end do series_a_lt
+-          rfa=2.*dlz*term1/(pi*pi) 
+-        else
+-          series_a_et: do n=1,mmax ! early time solution
+-            rn=float(n)
+-            ar1=((2.*rn-1.)*dlz-(dlz-z))/(2.*t1)
+-            ar2=((2.*rn-1.)*dlz+(dlz-z))/(2.*t1)
+-            fierfc1=exp(-ar1**2)/sqrt(pi)-ar1*derfc(ar1)
+-            fierfc2=exp(-ar2**2)/sqrt(pi)-ar2*derfc(ar2)
+-! test for convergence of series to within 1/1e+06 of previous value      
+-            t1old=term1
+-            tol=abs(term1/1e+06) ! tol=term1/10000. revised 2/17/2015, RLB
+-            term1=term1+fierfc1+fierfc2
+-            delt1=abs(term1-t1old)
+-            n1=n
+-            if(delt1<=tol) exit
+-          end do series_a_et
+-          rfa=2.*t1*term1 
+-        end if
+-        if(lcv .and. delt1>tol) then
+-          nccs=nccs+1
+-          nv(i)=1
+-          lcv=.false.
+-        end if
+-        if(n1>nmx) nmx=n1
+-        if(n1<nmn) nmn=n1
+-      else
+-        rfa=0.0
+-      end if
+-      tdif2=t-capt(m+1)
+-      if(tdif2 > 0.0) then
+-!  corrected diffusivity term in next line (divide by b1*b1)       
+-        t2=sqrt(tdif2*dif(zo(i))/(b1*b1))
+-        if (t2<1.0e-29) t2=1.0e-29
+-        term2=0.0 
+-        if(tfac1>late_t) then !
+-          temp3=tdif2*dif1/dlz          
+-          rf=rf-rik(i+(m-1)*imax)*(temp3)
+-          series_b_lt: do n=1,mmax ! later time solution
+-            rn=float(n)
+-            ar3=rn*pi*(dlz-z)/(dlz)
+-            ar4=(rn*pi)/dlz
+-            flt2=exp(-dif1*tdif2*ar4*ar4)*cos(ar3)
+-            flt2=float(-1**n)/(rn*rn)*flt2
+-! test for convergence of series to within 1/1e+06 of previous value      
+-            t2old=term2
+-            tol=abs(term2/1e+06) ! tol=term2/10000. revised 2/17/2015, RLB
+-            term2=term2+flt2
+-            delt2=abs(term2-t2old)
+-            n1=n
+-            if(delt2<=tol) exit
+-          end do series_b_lt
+-          rfb=2.*dlz*term2/(pi*pi) 
+-        else
+-          series_b_et: do n=1,mmax ! early time solution
+-            rn=float(n)
+-            ar3=((2.*rn-1.)*dlz-(dlz-z))/(2.*t2)
+-            ar4=((2.*rn-1.)*dlz+(dlz-z))/(2.*t2)
+-            fierfc3=exp(-ar3**2)/sqrt(pi)-ar3*derfc(ar3)
+-            fierfc4=exp(-ar4**2)/sqrt(pi)-ar4*derfc(ar4)
+-! test for convergence of series to within 1/1e+06 of previous value      
+-            t2old=term2
+-            tol=abs(term2/1e+06) ! tol=term2/10000. revised 2/17/2015, RLB
+-            term2=term2+fierfc3+fierfc4
+-            delt2=abs(term2-t2old)
+-            n1=n
+-            if(delt2<=tol) exit
+-          end do series_b_et
+-          rfb=2.*t2*term2 
+-        end if
+-        if(lcv .and. delt2>tol) then
+-          nccs=nccs+1
+-          nv(i)=1
+-          lcv=.false.
+-        end if
+-        if(n1>nmx) nmx=n1
+-        if(n1<nmn) nmn=n1
+-      else
+-        rfb=0.0
+-      end if
+-      if(tfac1>late_t) then
+-        rf=rf-rik(i+(m-1)*imax)*(rfa-rfb)
+-      else
+-        rf=rf+rik(i+(m-1)*imax)*(rfa-rfb)
+-      end if
+-      if(rfa==0.0 .and. rfb==0.0) exit ! skip unnecessary cycles, RLB, 2/19/2015
+-    end do temporal_loop 
++      if(dble(t)<=capt(m)) exit
++      rf=rf+rik(i+(m-1)*imax)* &
++        (step_head(z,dlz,dble(t)-capt(m),dif1)- &
++         step_head(z,dlz,dble(t)-capt(m+1),dif1))
++    end do temporal_loop
+     ptran(j)=rf
+     p(j)=pzero(j)+ptran(j)
+     bline(j)=z*beta
+@@ -280,4 +173,35 @@
+ write(ulog,*) 'Saturated-zone nonconvergent cells: '
+ write(ulog,*) nccs
+ return
++
++contains
++real(double) function step_head(zz,ll,dt,dd) result(h)
++  real(double),intent(in)::zz,ll,dt,dd
++  real(double)::root,aa,bb,ss,term,nn
++  integer::kk
++  h=0.d0
++  if(dt<=0.d0) return
++  if(dd*dt/(ll*ll)>1.d0) then
++    ss=0.d0
++    do kk=1,mmax
++      nn=dble(kk)
++      term=cos(nn*pi*zz/ll)*exp(-dd*dt*(nn*pi/ll)**2)/(nn*nn)
++      ss=ss+term
++      if(abs(term)<1.d-14) exit
++    enddo
++    h=dd*dt/ll+(ll-zz)**2/(2.d0*ll)-ll/6.d0-2.d0*ll*ss/(pi*pi)
++  else
++    root=sqrt(dd*dt)
++    ss=0.d0
++    do kk=1,mmax
++      nn=dble(kk)
++      aa=((2.d0*nn-1.d0)*ll-(ll-zz))/(2.d0*root)
++      bb=((2.d0*nn-1.d0)*ll+(ll-zz))/(2.d0*root)
++      term=exp(-aa*aa)/sqrt(pi)-aa*derfc(aa)+exp(-bb*bb)/sqrt(pi)-bb*derfc(bb)
++      ss=ss+term
++      if(abs(term)<1.d-14) exit
++    enddo
++    h=2.d0*root*ss
++  endif
++end function step_head
+ end subroutine savage
+--- svgstp.f95
++++ svgstp.f95
+@@ -66,125 +66,18 @@
+       rf(j)=0.0 
+     else
+       rf(j)=0.0 
+-      riksum=rik(i);   ! Added 8 Jan 2016, RLB
+-      temp2=dlz*(3.*(dlz-z)*(dlz-z)-dlz*dlz)/(6.*dlz*dlz) !time-independent factor, Moved 5 Jan 2016, RLB  
+-      temporal_loop_1: do mm=1,nper
+-        tdif1=t0-capt(mm)
+-        tfac1=tdif1*dif1/(dlz*dlz) ! moved to top level of temporal_loop_1 from line 74, 4 Jan 2016, RLB
+-        if(tdif1 > 0.0) then
+-!  corrected diffusivity term in next line (divide by b1*b1)       
+-          t1=sqrt(tdif1*dif(zo(i))/(b1*b1))
+-          if (t1<1.0e-29) t1=1.0e-29
+-          term1=0.0
+-          if(tfac1>late_t) then  !Added later time solution to improve performance and eliminate nonconvergent cells, 2/18-23/2015, RLB
+-            temp1=tdif1*dif1/dlz ! Corrected 7 Jan 2016
+-            if(mm>1) riksum=riksum+rik(i+(mm-1)*imax)-rik(i+(mm-2)*imax) ! Added 8 Jan 2016, RLB
+-            rf(j)=rf(j)+rik(i+(mm-1)*imax)*temp1+riksum*temp2 ! Revised 8 Jan 2016
+-            series_a_lt: do n=1,mmax ! later time solution
+-              rn=float(n)
+-              ar1=rn*pi*(dlz-z)/(dlz)
+-              ar2=(rn*pi)/dlz
+-              flt1=exp(-dif1*tdif1*ar2*ar2)*cos(ar1)
+-              flt1=float(-1**n)/(rn*rn)*flt1
+-! test for convergence of series to within 1/1e+06 of previous value      
+-              t1old=term1
+-              tol=abs(term1/1e+06) ! tol=term1/10000. revised 2/17/2015, RLB
+-              term1=term1+flt1
+-              delt1=abs(term1-t1old)
+-              n1=n
+-              if(delt1<=tol) exit
+-            end do series_a_lt
+-            rfa=2.*dlz*term1/(pi*pi) 
+-          else
+-            series_a_et: do n=1,mmax ! early time solution
+-              rn=float(n)
+-              ar1=((2.*rn-1.)*dlz-(dlz-z))/(2.*t1)
+-              ar2=((2.*rn-1.)*dlz+(dlz-z))/(2.*t1)
+-              fierfc1=exp(-ar1**2)/sqrt(pi)-ar1*derfc(ar1)
+-              fierfc2=exp(-ar2**2)/sqrt(pi)-ar2*derfc(ar2)
+-! test for convergence of series to within 1/1e+06 of previous value      
+-              t1old=term1
+-              tol=abs(term1/1e+06) ! tol=term1/10000. revised 2/17/2015, RLB
+-              term1=term1+fierfc1+fierfc2
+-              delt1=abs(term1-t1old)
+-              n1=n
+-              if(delt1<=tol) exit
+-            end do series_a_et
+-            rfa=2.*t1*term1
+-          end if
+-          if(lcvs .and. delt1>tol) then
+-            nccs=nccs+1
+-            nv(i)=1
+-            lcvs=.false.
+-          end if
+-          if(n1>nmx) nmx=n1
+-          if(n1<nmn) nmn=n1
+-        else
+-          rfa=0.0
+-        end if
+-        tdif2=t0-capt(mm+1)
+-        if(tdif2 > 0.0) then
+-!  corrected diffusivity term in next line (divide by b1*b1)       
+-          t2=sqrt(tdif2*dif(zo(i))/(b1*b1))
+-          if (t2<1.0e-29) t2=1.0e-29
+-          term2=0.0 
+-          if(tfac1>late_t) then
+-            temp3=tdif2*dif1/dlz  ! Corrected 7 Jan 2016
+-            rf(j)=rf(j)-rik(i+(mm-1)*imax)*temp3
+-            series_b_lt: do n=1,mmax ! later time solution
+-              rn=float(n)
+-              ar3=rn*pi*(dlz-z)/(dlz)
+-              ar4=(rn*pi)/dlz
+-              flt2=exp(-dif1*tdif2*ar4*ar4)*cos(ar3)
+-              flt2=float(-1**n)/(rn*rn)*flt2
+-! test for convergence of series to within 1/1e+06 of previous value      
+-              t2old=term2
+-              tol=abs(term2/1e+06) ! tol=term2/10000. revised 2/17/2015, RLB
+-              term2=term2+flt2
+-              delt2=abs(term2-t2old)
+-              n1=n
+-              if(delt2<=tol) exit
+-            end do series_b_lt
+-            rfb=2.*dlz*term2/(pi*pi)
+-          else
+-            series_b_et: do n=1,mmax ! early time solution
+-              rn=float(n)
+-              ar3=((2.*rn-1.)*dlz-(dlz-z))/(2.*t2)
+-              ar4=((2.*rn-1.)*dlz+(dlz-z))/(2.*t2)
+-              fierfc3=exp(-ar3**2)/sqrt(pi)-ar3*derfc(ar3)
+-              fierfc4=exp(-ar4**2)/sqrt(pi)-ar4*derfc(ar4)
+-! test for convergence of series to within 1/1e+06 of previous value      
+-              t2old=term2
+-              tol=abs(term2/1e+06) ! tol=term2/10000. revised 2/17/2015, RLB
+-              term2=term2+fierfc3+fierfc4
+-              delt2=abs(term2-t2old)
+-              n1=n
+-              if(delt2<=tol) exit
+-            end do series_b_et
+-            rfb=2.*t2*term2
+-          end if
+-          if(lcvs .and. delt2>tol) then
+-            nccs=nccs+1
+-            nv(i)=1
+-            lcvs=.false.
+-          end if
+-          if(n1>nmx) nmx=n1
+-          if(n1<nmn) nmn=n1
+-        else
+-          rfb=0.0
+-        end if
+-        if(tfac1>late_t) then
+-          rf(j)=rf(j)-rik(i+(mm-1)*imax)*(rfa-rfb)
+-        else
+-          rf(j)=rf(j)+rik(i+(mm-1)*imax)*(rfa-rfb)
+-        end if
+-        if(rfa==0.0 .and. rfb==0.0) exit ! skip unnecessary cycles, RLB, 2/19/2015
+-      end do temporal_loop_1 
++
++    temporal_loop_1: do mm=1,nper
++      if(t0<=capt(mm)) exit
++      rf(j)=rf(j)+rik(i+(mm-1)*imax)* &
++        (step_head(z,dlz,t0-capt(mm),dif1)- &
++         step_head(z,dlz,t0-capt(mm+1),dif1))
++    end do temporal_loop_1
+     end if
+     bline(j)=z*beta
+-    if(abs(rf(j))>0.0) then ! added 17AUG2009 RLB 
++
+       ptran(j)=rf(j)
+-    end if
++
+     p(j)=pzero(j)+ptran(j)
+     ptest=p(j)-bline(j)
+     if(ptest > 0.0) then
+@@ -268,4 +161,35 @@
+   end if
+ end do temporal_loop 
+ return
++
++contains
++real(double) function step_head(zz,ll,dt,dd) result(h)
++  real(double),intent(in)::zz,ll,dt,dd
++  real(double)::root,aa,bb,ss,term,nn
++  integer::kk
++  h=0.d0
++  if(dt<=0.d0) return
++  if(dd*dt/(ll*ll)>1.d0) then
++    ss=0.d0
++    do kk=1,mmax
++      nn=dble(kk)
++      term=cos(nn*pi*zz/ll)*exp(-dd*dt*(nn*pi/ll)**2)/(nn*nn)
++      ss=ss+term
++      if(abs(term)<1.d-14) exit
++    enddo
++    h=dd*dt/ll+(ll-zz)**2/(2.d0*ll)-ll/6.d0-2.d0*ll*ss/(pi*pi)
++  else
++    root=sqrt(dd*dt)
++    ss=0.d0
++    do kk=1,mmax
++      nn=dble(kk)
++      aa=((2.d0*nn-1.d0)*ll-(ll-zz))/(2.d0*root)
++      bb=((2.d0*nn-1.d0)*ll+(ll-zz))/(2.d0*root)
++      term=exp(-aa*aa)/sqrt(pi)-aa*derfc(aa)+exp(-bb*bb)/sqrt(pi)-bb*derfc(bb)
++      ss=ss+term
++      if(abs(term)<1.d-14) exit
++    enddo
++    h=2.d0*root*ss
++  endif
++end function step_head
+ end subroutine svgstp
+--- svgstp_p.f95
++++ svgstp_p.f95
+@@ -75,126 +75,18 @@
+            rf(j)=0.0 
+         else
+            rf(j)=0.0 
+-           riksum=rik(i);   ! Added 8 Jan 2016, RLB
+-           temp2=dlz*(3.*(dlz-z)*(dlz-z)-dlz*dlz)/(6.*dlz*dlz) !time-independent factor, Moved 5 Jan 2016, RLB  
+-           temporal_loop_1: do mm=1,nper
+-              tdif1=t0-capt(mm)
+-              tfac1=tdif1*dif1/(dlz*dlz) ! moved to top level of temporal_loop_1 from line 74, 4 Jan 2016, RLB
+-              if(tdif1 > 0.0) then
+-                 !  corrected diffusivity term in next line (divide by b1*b1) 	      
+-                 t1=sqrt(tdif1*dif(zo(i))/(b1*b1))
+-                 if (t1<1.0e-29) t1=1.0e-29
+-                 term1=0.0
+-                 if(tfac1>late_t) then  !Added later time solution to improve performance and
+-                    !                        eliminate nonconvergent cells, 2/18-23/2015, RLB
+-                    temp1=tdif1*dif1/dlz ! Corrected 7 Jan 2016
+-                    if(mm>1) riksum=riksum+rik(i+(mm-1)*imax)-rik(i+(mm-2)*imax) ! Added 8 Jan 2016, RLB
+-                    rf(j)=rf(j)+rik(i+(mm-1)*imax)*temp1+riksum*temp2 ! Revised 8 Jan 2016
+-                    series_a_lt: do n=1,mmax ! later time solution
+-                       rn=float(n)
+-                       ar1=rn*pi*(dlz-z)/(dlz)
+-                       ar2=(rn*pi)/dlz
+-                       flt1=exp(-dif1*tdif1*ar2*ar2)*cos(ar1)
+-                       flt1=float(-1**n)/(rn*rn)*flt1
+-                       ! test for convergence of series to within 1/1.e+06 of previous value	      
+-                       t1old=term1
+-                       tol=abs(term1/1.e+06) ! tol=term1/10000. revised 2/17/2015, RLB
+-                       term1=term1+flt1
+-                       delt1=abs(term1-t1old)
+-                       n1=n
+-                       if(delt1<=tol) exit
+-   	            end do series_a_lt
+-                    rfa=2.*dlz*term1/(pi*pi) 
+-                 else
+-                    series_a_et: do n=1,mmax ! early time solution
+-                       rn=float(n)
+-                       ar1=((2.*rn-1.)*dlz-(dlz-z))/(2.*t1)
+-                       ar2=((2.*rn-1.)*dlz+(dlz-z))/(2.*t1)
+-                       fierfc1=exp(-ar1**2)/sqrt(pi)-ar1*derfc(ar1)
+-                       fierfc2=exp(-ar2**2)/sqrt(pi)-ar2*derfc(ar2)
+-                       ! test for convergence of series to within 1/1.e+06 of previous value	      
+-                       t1old=term1
+-                       tol=abs(term1/1.e+06) ! tol=term1/10000. revised 2/17/2015, RLB
+-                       term1=term1+fierfc1+fierfc2
+-                       delt1=abs(term1-t1old)
+-                       n1=n
+-                       if(delt1<=tol) exit
+-                    end do series_a_et
+-                    rfa=2.*t1*term1
+-                 end if
+-                 if(lcvs .and. delt1>tol) then
+-                    nccs=nccs+1
+-                    nv(i)=1
+-                    lcvs=.false.
+-                 end if
+-                 if(n1>nmx) nmx=n1
+-                 if(n1<nmn) nmn=n1
+-              else
+-                 rfa=0.0
+-              end if
+-              tdif2=t0-capt(mm+1)
+-              if(tdif2 > 0.0) then
+-                 !  corrected diffusivity term in next line (divide by b1*b1) 	      
+-                 t2=sqrt(tdif2*dif(zo(i))/(b1*b1))
+-                 if (t2<1.0e-29) t2=1.0e-29
+-                 term2=0.0 
+-                 if(tfac1>late_t) then
+-                    temp3=tdif2*dif1/dlz  ! Corrected 7 Jan 2016
+-                    rf(j)=rf(j)-rik(i+(mm-1)*imax)*temp3 
+-                    series_b_lt: do n=1,mmax ! later time solution
+-                       rn=float(n)
+-                       ar3=rn*pi*(dlz-z)/(dlz)
+-                       ar4=(rn*pi)/dlz
+-                       flt2=exp(-dif1*tdif2*ar4*ar4)*cos(ar3)
+-                       flt2=float(-1**n)/(rn*rn)*flt2
+-                       ! test for convergence of series to within 1/1.e+06 of previous value	      
+-                       t2old=term2
+-                       tol=abs(term2/1.e+06) ! tol=term2/10000. revised 2/17/2015, RLB
+-                       term2=term2+flt2
+-                       delt2=abs(term2-t2old)
+-                       n1=n
+-                       if(delt2<=tol) exit
+-                    end do series_b_lt
+-                    rfb=2.*dlz*term2/(pi*pi)
+-                 else
+-                    series_b_et: do n=1,mmax ! early time solution
+-                       rn=float(n)
+-                       ar3=((2.*rn-1.)*dlz-(dlz-z))/(2.*t2)
+-                       ar4=((2.*rn-1.)*dlz+(dlz-z))/(2.*t2)
+-                       fierfc3=exp(-ar3**2)/sqrt(pi)-ar3*derfc(ar3)
+-                       fierfc4=exp(-ar4**2)/sqrt(pi)-ar4*derfc(ar4)
+-                       ! test for convergence of series to within 1/1.e+06 of previous value	      
+-                       t2old=term2
+-                       tol=abs(term2/1.e+06) ! tol=term2/10000. revised 2/17/2015, RLB
+-                       term2=term2+fierfc3+fierfc4
+-                       delt2=abs(term2-t2old)
+-                       n1=n
+-                       if(delt2<=tol) exit
+-                    end do series_b_et
+-                    rfb=2.*t2*term2
+-                 end if
+-                 if(lcvs .and. delt2>tol) then
+-                    nccs=nccs+1
+-                    nv(i)=1
+-                    lcvs=.false.
+-                 end if
+-                 if(n1>nmx) nmx=n1
+-                 if(n1<nmn) nmn=n1
+-              else
+-                 rfb=0.0
+-              end if
+-              if(tfac1>late_t) then
+-                 rf(j)=rf(j)-rik(i+(mm-1)*imax)*(rfa-rfb)
+-              else
+-                 rf(j)=rf(j)+rik(i+(mm-1)*imax)*(rfa-rfb)
+-              end if
+-              if(rfa==0.0 .and. rfb==0.0) exit ! skip unnecessary cycles, RLB, 2/19/2015
+-           end do temporal_loop_1
++
++    temporal_loop_1: do mm=1,nper
++      if(t0<=capt(mm)) exit
++      rf(j)=rf(j)+rik(i+(mm-1)*imax)* &
++        (step_head(z,dlz,t0-capt(mm),dif1)- &
++         step_head(z,dlz,t0-capt(mm+1),dif1))
++    end do temporal_loop_1
+         end if
+         bline(j)=z*beta
+-        if(abs(rf(j))>0.0) then ! added 17AUG2009 RLB 
++
+            ptran(j)=rf(j)
+-        end if
++
+         p(j)=pzero(j)+ptran(j)
+         ptest=p(j)-bline(j)
+         if(ptest > 0.0) then
+@@ -278,4 +170,35 @@
+      end if
+   end do temporal_loop
+   return
++
++contains
++real(double) function step_head(zz,ll,dt,dd) result(h)
++  real(double),intent(in)::zz,ll,dt,dd
++  real(double)::root,aa,bb,ss,term,nn
++  integer::kk
++  h=0.d0
++  if(dt<=0.d0) return
++  if(dd*dt/(ll*ll)>1.d0) then
++    ss=0.d0
++    do kk=1,mmax
++      nn=dble(kk)
++      term=cos(nn*pi*zz/ll)*exp(-dd*dt*(nn*pi/ll)**2)/(nn*nn)
++      ss=ss+term
++      if(abs(term)<1.d-14) exit
++    enddo
++    h=dd*dt/ll+(ll-zz)**2/(2.d0*ll)-ll/6.d0-2.d0*ll*ss/(pi*pi)
++  else
++    root=sqrt(dd*dt)
++    ss=0.d0
++    do kk=1,mmax
++      nn=dble(kk)
++      aa=((2.d0*nn-1.d0)*ll-(ll-zz))/(2.d0*root)
++      bb=((2.d0*nn-1.d0)*ll+(ll-zz))/(2.d0*root)
++      term=exp(-aa*aa)/sqrt(pi)-aa*derfc(aa)+exp(-bb*bb)/sqrt(pi)-bb*derfc(bb)
++      ss=ss+term
++      if(abs(term)<1.d-14) exit
++    enddo
++    h=2.d0*root*ss
++  endif
++end function step_head
+ end subroutine svgstp_p

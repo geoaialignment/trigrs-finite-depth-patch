@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this patch or the exposure check, please cite the Zenodo archive."
+title: "Code, data and corrected kernel for: Analytic verification of the finite-depth pressure-head solver of TRIGRS (versions 2.0.06b and 2.1.0), with a pre-run exposure check and a corrected kernel"
+version: 1.0.0
+doi: 10.5281/zenodo.23534840
+license: CC0-1.0
+repository-code: "https://github.com/geoaialignment/trigrs-finite-depth-patch"
+authors:
+  - family-names: Park
+    given-names: Eungyu
+    orcid: "https://orcid.org/0000-0002-2293-4686"
+    affiliation: "Kyungpook National University; GeoAI Alignment, Inc."
+  - family-names: Kim
+    given-names: Taeyu
+    affiliation: "Kyungpook National University; GeoAI Alignment, Inc."
+  - family-names: Park
+    given-names: Jangwon
+    affiliation: "Kyungpook National University; GeoAI Alignment, Inc."

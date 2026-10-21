@@ -1,0 +1,6 @@
+Registered serial executable SHA-256 verified: d140b286929ae1a2200cc6473fffb888c94b00076e645369e13566ef9e1f0bcb
+Cell: long_dry_lead_2h_burst
+Parsed listing shape: (86, 11, 6)
+Max absolute difference across six output columns: 0
+Registered executable vs independent reference: head=4.96790041e-05 m, FS=4.87363322e-05
+PASS: identical parsed numerical outputs from cleaned-patch build and registered release.

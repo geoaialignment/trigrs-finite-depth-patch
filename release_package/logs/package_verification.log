@@ -1,0 +1,23 @@
+PASS: A = 5 remains UNEXPOSED
+PASS: A > 5 is EXPOSED
+PASS: A = 72 without younger wet period has NO-D1
+PASS: A = 72 with younger started wet period has EXPOSED-D1
+PASS: Younger wet period must have strictly started before output
+PASS: Coupled unsaturated path outside fallback is N/A
+PASS: Fallback boundary d = 1/alpha is applicable
+PASS: Infinite depth has N/A finite-layer screens
+PASS: Slope-range endpoints give conservative exposure
+PASS: Tutorial slope-range CLI PASS
+PASS: native serial regression status 1, expected 1
+PASS: release serial regression status 0, expected 0
+PASS: All three public Python scripts compile
+PASS: Public-file audit: no fixed machine paths or internal scope-experiment comments
+PASS: temporary builds, copied source trees and generated solver runs removed
+PASS: initial package audit found no binaries, internal logs or fixed machine paths
+PASS: optional-grid fix: all 8 file-based tests pass; negative constants and multiple zones still require their grids
+PASS: tutorial and two frozen harness input checks rerun after optional-grid fix
+PASS: age thresholds, younger wet-period condition, fallback applicability and slope-range CLI rerun
+PASS: fresh patch application programmatically verifies 7 comment-different files and 10 correction-patch files
+PASS: final rerun of all 8 optional-grid tests; all 4 Python scripts compile
+PASS: final package audit: 19 public text files, no fixed machine paths, binaries or temporary fixtures
+PASS: patch log count matches its 7 per-file rows; correction patch contains 10 file sections

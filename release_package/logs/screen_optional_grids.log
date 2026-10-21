@@ -1,0 +1,162 @@
+Before fix: five optional-grid cases reproduce missing-file errors.
+test_all_optional_grids_unused (__main__.OptionalGridTests.test_all_optional_grids_unused) ... ERROR
+test_constant_rainfall_grids_unused (__main__.OptionalGridTests.test_constant_rainfall_grids_unused) ... ok
+test_constant_soil_depth_grid_unused (__main__.OptionalGridTests.test_constant_soil_depth_grid_unused) ... ERROR
+test_constant_water_table_grid_unused (__main__.OptionalGridTests.test_constant_water_table_grid_unused) ... ERROR
+test_multiple_zones_require_zone_grid (__main__.OptionalGridTests.test_multiple_zones_require_zone_grid) ... ok
+test_required_property_grid_missing_is_error (__main__.OptionalGridTests.test_required_property_grid_missing_is_error) ... ok
+test_single_zone_grid_unused (__main__.OptionalGridTests.test_single_zone_grid_unused) ... ERROR
+test_zero_background_flux_grid_unused (__main__.OptionalGridTests.test_zero_background_flux_grid_unused) ... ERROR
+
+======================================================================
+ERROR: test_all_optional_grids_unused (__main__.OptionalGridTests.test_all_optional_grids_unused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<package>/screen/test_screen.py", line 70, in test_all_optional_grids_unused
+    self.check_screen()
+  File "<package>/screen/test_screen.py", line 46, in check_screen
+    self.assertEqual(screen.screen(screen.read_input(self.input)), self.expected)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<package>/screen/screen.py", line 48, in read_input
+    grids[name] = read_grid(base/lines[i+1].strip("'\""))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<package>/screen/screen.py", line 20, in read_grid
+    lines = path.read_text().splitlines()
+            ^^^^^^^^^^^^^^^^
+  File "<python>/lib/python3.11/pathlib.py", line 1058, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<python>/lib/python3.11/pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '<package>/screen/screen_test_ccd720m1/input/zones.asc'
+
+======================================================================
+ERROR: test_constant_soil_depth_grid_unused (__main__.OptionalGridTests.test_constant_soil_depth_grid_unused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<package>/screen/test_screen.py", line 55, in test_constant_soil_depth_grid_unused
+    self.check_screen()
+  File "<package>/screen/test_screen.py", line 46, in check_screen
+    self.assertEqual(screen.screen(screen.read_input(self.input)), self.expected)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<package>/screen/screen.py", line 48, in read_input
+    grids[name] = read_grid(base/lines[i+1].strip("'\""))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<package>/screen/screen.py", line 20, in read_grid
+    lines = path.read_text().splitlines()
+            ^^^^^^^^^^^^^^^^
+  File "<python>/lib/python3.11/pathlib.py", line 1058, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<python>/lib/python3.11/pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '<package>/screen/screen_test_u708ghq4/input/zmax.asc'
+
+======================================================================
+ERROR: test_constant_water_table_grid_unused (__main__.OptionalGridTests.test_constant_water_table_grid_unused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<package>/screen/test_screen.py", line 60, in test_constant_water_table_grid_unused
+    self.check_screen()
+  File "<package>/screen/test_screen.py", line 46, in check_screen
+    self.assertEqual(screen.screen(screen.read_input(self.input)), self.expected)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<package>/screen/screen.py", line 48, in read_input
+    grids[name] = read_grid(base/lines[i+1].strip("'\""))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<package>/screen/screen.py", line 20, in read_grid
+    lines = path.read_text().splitlines()
+            ^^^^^^^^^^^^^^^^
+  File "<python>/lib/python3.11/pathlib.py", line 1058, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<python>/lib/python3.11/pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '<package>/screen/screen_test_v46t63cj/input/depthwt.asc'
+
+======================================================================
+ERROR: test_single_zone_grid_unused (__main__.OptionalGridTests.test_single_zone_grid_unused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<package>/screen/test_screen.py", line 50, in test_single_zone_grid_unused
+    self.check_screen()
+  File "<package>/screen/test_screen.py", line 46, in check_screen
+    self.assertEqual(screen.screen(screen.read_input(self.input)), self.expected)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<package>/screen/screen.py", line 48, in read_input
+    grids[name] = read_grid(base/lines[i+1].strip("'\""))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<package>/screen/screen.py", line 20, in read_grid
+    lines = path.read_text().splitlines()
+            ^^^^^^^^^^^^^^^^
+  File "<python>/lib/python3.11/pathlib.py", line 1058, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<python>/lib/python3.11/pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '<package>/screen/screen_test_4w3twk_m/input/zones.asc'
+
+======================================================================
+ERROR: test_zero_background_flux_grid_unused (__main__.OptionalGridTests.test_zero_background_flux_grid_unused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<package>/screen/test_screen.py", line 65, in test_zero_background_flux_grid_unused
+    self.check_screen()
+  File "<package>/screen/test_screen.py", line 46, in check_screen
+    self.assertEqual(screen.screen(screen.read_input(self.input)), self.expected)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<package>/screen/screen.py", line 48, in read_input
+    grids[name] = read_grid(base/lines[i+1].strip("'\""))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<package>/screen/screen.py", line 20, in read_grid
+    lines = path.read_text().splitlines()
+            ^^^^^^^^^^^^^^^^
+  File "<python>/lib/python3.11/pathlib.py", line 1058, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<python>/lib/python3.11/pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '<package>/screen/screen_test_wepkas8e/input/rizero.asc'
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.290s
+
+FAILED (errors=5)
+Process exit status: 1 (expected failure before fix)
+
+After fix: upstream scalar and single-zone semantics applied before grid reads.
+test_all_optional_grids_unused (__main__.OptionalGridTests.test_all_optional_grids_unused) ... ok
+test_constant_rainfall_grids_unused (__main__.OptionalGridTests.test_constant_rainfall_grids_unused) ... ok
+test_constant_soil_depth_grid_unused (__main__.OptionalGridTests.test_constant_soil_depth_grid_unused) ... ok
+test_constant_water_table_grid_unused (__main__.OptionalGridTests.test_constant_water_table_grid_unused) ... ok
+test_multiple_zones_require_zone_grid (__main__.OptionalGridTests.test_multiple_zones_require_zone_grid) ... ok
+test_required_property_grid_missing_is_error (__main__.OptionalGridTests.test_required_property_grid_missing_is_error) ... ok
+test_single_zone_grid_unused (__main__.OptionalGridTests.test_single_zone_grid_unused) ... ok
+test_zero_background_flux_grid_unused (__main__.OptionalGridTests.test_zero_background_flux_grid_unused) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.296s
+
+OK
+Process exit status: 0
+
+Final rerun:
+test_all_optional_grids_unused (__main__.OptionalGridTests.test_all_optional_grids_unused) ... ok
+test_constant_rainfall_grids_unused (__main__.OptionalGridTests.test_constant_rainfall_grids_unused) ... ok
+test_constant_soil_depth_grid_unused (__main__.OptionalGridTests.test_constant_soil_depth_grid_unused) ... ok
+test_constant_water_table_grid_unused (__main__.OptionalGridTests.test_constant_water_table_grid_unused) ... ok
+test_multiple_zones_require_zone_grid (__main__.OptionalGridTests.test_multiple_zones_require_zone_grid) ... ok
+test_required_property_grid_missing_is_error (__main__.OptionalGridTests.test_required_property_grid_missing_is_error) ... ok
+test_single_zone_grid_unused (__main__.OptionalGridTests.test_single_zone_grid_unused) ... ok
+test_zero_background_flux_grid_unused (__main__.OptionalGridTests.test_zero_background_flux_grid_unused) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.276s
+
+OK
+Process exit status: 0

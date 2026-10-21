@@ -1,0 +1,10 @@
+Independent finite-layer eigenmode recurrence / Iverson half-space
+Tolerance: capped head < 1e-4 m AND FS < 1e-4 (listing rounding included)
+uniform_past_A5: max capped-head error=0.618736817 m; max FS error=0.486351311; FAIL
+start_burst_then_dry: max capped-head error=1.99999996 m; max FS error=0.486351311; FAIL
+long_dry_lead_2h_burst: max capped-head error=1.34204084 m; max FS error=0.486409961; FAIL
+two_bursts: max capped-head error=1.00000499 m; max FS error=0.486365547; FAIL
+infinite_depth_start_burst: max capped-head error=4.99516301e-05 m; max FS error=4.96052014e-05; PASS
+single_output_savage: max capped-head error=1.99999996 m; max FS error=0.486351311; FAIL
+OVERALL FAIL
+Process exit status: 1
