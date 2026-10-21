@@ -1,6 +1,8 @@
 # TRIGRS finite-depth solver: corrected kernel and pre-run exposure check
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23534840.svg)](https://doi.org/10.5281/zenodo.23534840)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23534840.svg)](https://doi.org/10.5281/zenodo.23534840) [![GeoAI Alignment](https://img.shields.io/badge/GeoAI%20Alignment-geoaialign.ai-1f6feb)](https://geoaialign.ai)
+
+Maintained by **[GeoAI Alignment, Inc.](https://geoaialign.ai)**, developer of the G.AI.A GeoAI agent platform for spatial decision support.
 
 This repository distributes a patch to [TRIGRS v2.1.0](https://github.com/usgs/landslides-trigrs/tree/v2.1.0) (Baum and Alvioli, 2016) that corrects the finite-depth pressure-head solver, together with a regression test against an independent analytic solution and a screen that tells a user, before a run, whether an input set is exposed to the departures.
 
@@ -49,6 +51,12 @@ Code, data and the corrected kernel are archived at Zenodo:
 
 The patch, scripts and documentation are dedicated to the public domain under [CC0 1.0](LICENSE.md), consistent with the public-domain status of the upstream USGS code. This is not an official USGS release. We thank the TRIGRS developers, Rex L. Baum and Massimiliano Alvioli, for making the source and its revision notes public.
 
-## About
+## GeoAI Alignment
 
-Developed by [GeoAI Alignment, Inc.](https://geoaialign.ai) with the School of Earth System Sciences, Kyungpook National University, Daegu, Republic of Korea. Contact: Eungyu Park (egpark@knu.ac.kr).
+[GeoAI Alignment, Inc.](https://geoaialign.ai) develops **G.AI.A**, a GeoAI agent platform that connects spatial data, satellite and field observations with expert analysis and simulation tools. A user states the area and the question in plain language; the agents run the analyses and return the results with the evidence behind them.
+
+Applications include landslide, flood and wildfire risk, groundwater and surface water, agriculture and forestry, ecology, urban planning and energy siting. See [solutions](https://geoaialign.ai/solutions) and our [research papers](https://geoaialign.ai/blog?category=research#papers).
+
+For landslide hazard analysis, model verification or a G.AI.A demonstration for your region, [contact us](https://geoaialign.ai/contact) or write to contact@geoaialign.com.
+
+This work was carried out by GeoAI Alignment, Inc. with the School of Earth System Sciences, Kyungpook National University, Daegu, Republic of Korea. Scientific contact: Eungyu Park (egpark@knu.ac.kr).
